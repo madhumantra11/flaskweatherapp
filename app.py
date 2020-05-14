@@ -6,9 +6,19 @@ from flask_cors import CORS,cross_origin
 
 app = Flask(__name__)
 # owmapikey=os.environ.get('119242c426975bc98ee4f259b9551823') #or provide your key here
-owmapikey = '119242c426975bc98ee4f259b9551823'
+#owmapikey = '119242c426975bc98ee4f259b9551823'
+owmapikey = 'c235e087f66450ccd468cf92507f97fd'
 owm = pyowm.OWM(owmapikey)
 
+'''import requests
+url = "https://weatherbit-v1-mashape.p.rapidapi.com/current"
+querystring = {"lang":"en","lon":"<required>","lat":"<required>"}
+headers = {
+    'x-rapidapi-host': "weatherbit-v1-mashape.p.rapidapi.com",
+    'x-rapidapi-key': "15263c1e77msh408ed2560d9f1c9p123c23jsn0fc0b44e64ea"
+    }
+response = requests.request("GET", url, headers=headers, params=querystring)
+print(response.text)'''
 
 # geting and sending response to dialogflow
 @app.route('/webhook', methods=['POST'])
@@ -32,7 +42,7 @@ def webhook():
 def processRequest(req):
     result = req.get("queryResult")
     parameters = result.get("parameters")
-    city = parameters.get("cityName")
+    city = parameters.get("geo-city")
     observation = owm.weather_at_place(city)
     w = observation.get_weather()
     latlon_res = observation.get_location()
@@ -61,6 +71,7 @@ def processRequest(req):
 
 
 if __name__ == '__main__':
-    port = int(os.getenv('PORT', 5000))
-    print("Starting app on port %d" % port)
-    app.run(debug=False, port=port, host='0.0.0.0')
+ '''port = int(os.getenv('PORT', 5000))
+ print("Starting app on port %d" % port)
+ app.run(debug=True, port=port, host='0.0.0.0')'''
+ app.run(debug=True, port = 5000)
